@@ -17,14 +17,15 @@ label{display:block;margin:8px 0 3px;color:var(--mu);font-size:13px}
 </style></head><body><main id="app"></main>
 <script>
 /* ===== CONFIG: your deployed Cloudflare Worker URL (no secrets here) ===== */
-const CONFIG={WORKER_URL:"https://studyhub-api.priyanshuyadav1182.workers.dev"};
+const CONFIG={WORKER_URL:"https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev"};
 const TYPES={lecture:"Lecture (video link)",pdf:"PDF",pyq:"PYQ",assignment:"Assignment",practical:"Practical file",syllabus:"Syllabus"};
-const NAMES={branches:"Branches",semesters:"Semesters",subjects:"Subjects",items:"Content",announcements:"Announcements"};
+const NAMES={courses:"Courses",branches:"Branches",semesters:"Semesters",subjects:"Subjects",items:"Content",announcements:"Announcements"};
 const SCH={
- branches:[["name","Name"]],
- semesters:[["branchId","Branch","ref:branches"],["name","Semester name (e.g. Sem 3)"]],
- subjects:[["semId","Semester","ref:semesters"],["code","Code"],["name","Subject name"]],
- items:[["subjectId","Subject","ref:subjects"],["type","Type","type"],["title","Title"],["url","URL (video / PDF link)","url"],["desc","Description"]],
+ courses:[["name","Course name"],["logo","Logo URL (optional)","url"]],
+ branches:[["courseId","Course","ref:courses"],["name","Branch name"]],
+ semesters:[["branchId","Branch","ref:branches"],["name","Year name (e.g. 2nd Year)"]],
+ subjects:[["semId","Semester","ref:semesters"],["code","Code"],["name","Subject name"],["units","Total units (default 5)"]],
+ items:[["subjectId","Subject","ref:subjects"],["type","Type","type"],["title","Title"],["unit","Unit number (e.g. 1)"],["url","URL (video / PDF link)","url"],["desc","Description"],["player","Lecture player","player"]],
  announcements:[["title","Title"],["body","Message","ta"]]};
 const HAS_PUB={items:1,announcements:1};
 let tok=sessionStorage.tk||"",D=null,dirty=false,tab="branches",edit=null,msg="";
@@ -57,6 +58,7 @@ function field(f,v){
   const [k,l,t]=f,id="f_"+k;let h=`<label>${l}</label>`;
   if(t&&t.startsWith("ref:")){const c=t.slice(4);h+=`<select id="${id}"><option value="">— select —</option>${D[c].map(o=>`<option value="${esc(o.id)}" ${o.id==v?"selected":""}>${esc(lab(c,o))}</option>`).join("")}</select>`}
   else if(t=="type")h+=`<select id="${id}">${Object.entries(TYPES).map(([a,b])=>`<option value="${a}" ${a==v?"selected":""}>${b}</option>`).join("")}</select>`;
+  else if(t=="player")h+=`<select id="${id}"><option value="std" ${v!="movi"?"selected":""}>Standard</option><option value="movi" ${v=="movi"?"selected":""}>Movi (direct video / HLS links)</option></select>`;
   else if(t=="ta")h+=`<textarea id="${id}" rows="4">${esc(v)}</textarea>`;
   else{h+=`<input id="${id}" value="${esc(v)}">`;if(t=="url")h+=`<div class="row" style="margin-top:6px"><input type="file" id="up" accept=".pdf,.doc,.docx,.ppt,.pptx,.zip,.png,.jpg"><button onclick="upload()">Upload file</button></div>`}
   return h;
@@ -74,7 +76,7 @@ function draw(){
 }
 function saveItem(){
   const o=edit?{...D[tab].find(x=>x.id==edit)}:{id:uid(),date:new Date().toISOString().slice(0,10)};
-  for(const f of SCH[tab]){o[f[0]]=$("#f_"+f[0]).value.trim();if(!o[f[0]]&&f[0]!="desc"){msg="Fill: "+f[1];return draw()}}
+  for(const f of SCH[tab]){o[f[0]]=$("#f_"+f[0]).value.trim();if(!o[f[0]]&&!["desc","logo","units","unit","player","code"].includes(f[0])){msg="Fill: "+f[1];return draw()}}
   if(o.url&&!/^https?:\/\//i.test(o.url)){msg="URL must start with http(s)://";return draw()}
   if(HAS_PUB[tab])o.published=$("#f_pub").checked;
   D[tab]=edit?D[tab].map(x=>x.id==edit?o:x):[...D[tab],o];
@@ -82,7 +84,7 @@ function saveItem(){
 }
 function tgl(id){const x=D[tab].find(x=>x.id==id);x.published=!x.published;dirty=true;draw()}
 function rm(c,id){
-  const ch={branches:["semesters","branchId"],semesters:["subjects","semId"],subjects:["items","subjectId"]}[c];
+  const ch={courses:["branches","courseId"],branches:["semesters","branchId"],semesters:["subjects","semId"],subjects:["items","subjectId"]}[c];
   if(ch)D[ch[0]].filter(x=>x[ch[1]]==id).forEach(x=>rm(ch[0],x.id));
   D[c]=D[c].filter(x=>x.id!=id);
 }

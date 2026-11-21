@@ -2,95 +2,152 @@
 <html lang="en" data-t="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Study Hub</title>
 <style>
-:root{--bg:#f6f7fb;--card:#fff;--tx:#1b1f2a;--mu:#667085;--ac:#4f46e5;--bd:#e4e6ef}
-[data-t=dark]{--bg:#0f1117;--card:#1a1d27;--tx:#eef0f6;--mu:#9aa3b5;--bd:#2a2e3b;--ac:#818cf8}
-*{box-sizing:border-box}body{margin:0;font:15px system-ui,sans-serif;background:var(--bg);color:var(--tx)}
-header{position:sticky;top:0;z-index:5;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--bd)}
-.logo{font-size:18px;cursor:pointer;margin-right:auto}
-input,select,button,.btn{font:inherit;padding:8px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);text-decoration:none;cursor:pointer}
-#q{flex:1;min-width:140px;max-width:320px;cursor:text}
-button.p,.btn{background:var(--ac);color:#fff;border-color:var(--ac)}
-main{max-width:980px;margin:auto;padding:16px}
-.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;gap:10px}
-.card h4{margin:4px 0}.card p,small{color:var(--mu);margin:0}
-.row{display:flex;gap:8px;flex-wrap:wrap}.sub{cursor:pointer}.sub:hover{border-color:var(--ac)}
-.ann{border-left:4px solid var(--ac);background:var(--card);padding:10px 14px;margin:8px 0;border-radius:8px}
-.tabs{display:flex;gap:6px;overflow-x:auto;margin:12px 0}.tabs button.on{background:var(--ac);color:#fff}
-#vid{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;z-index:9;padding:12px}
-#vid[hidden]{display:none}#vb{width:min(900px,100%);aspect-ratio:16/9;background:#000}#vb iframe,#vb video{width:100%;height:100%;border:0}
-#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--ac);color:#fff;padding:8px 14px;border-radius:8px;display:none}
+:root{--bg:#f3f4fa;--card:#fff;--tx:#111c3a;--mu:#5d6785;--ac:#2f5de8;--bd:#e6e8f1;--hh:58px;--sh:0 4px 14px #1b2a5a14}
+[data-t=dark]{--bg:#0e1118;--card:#1a1e2a;--tx:#eef0f7;--mu:#9aa3bb;--bd:#2b3040;--ac:#7c9bff;--sh:none}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font:16px Roboto,system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+header{position:sticky;top:0;z-index:20;height:var(--hh);display:flex;align-items:center;gap:4px;padding:0 10px 0 14px;background:var(--bg);border-bottom:1px solid var(--bd)}
+h1{font-size:20px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sp{flex:1}
+button,.btn,input{font:inherit;color:var(--tx);border:1px solid var(--bd);background:var(--card);border-radius:12px;padding:8px 14px;cursor:pointer;text-decoration:none}
+.ic{border:0;background:none;font-size:20px;padding:6px 9px;position:relative}.btn.p,button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+#bd{position:absolute;top:0;right:0;background:#e5365a;color:#fff;font:700 11px sans-serif;border-radius:9px;padding:1px 5px;font-style:normal}
+main{max-width:760px;margin:auto;padding:14px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cd{background:var(--card);border-radius:20px;padding:18px 16px 18px 20px;box-shadow:var(--sh);border:1px solid var(--bd);border-left:7px solid var(--c);cursor:pointer;min-height:110px}
+.cd h3{margin:0 0 6px;font-size:19px;line-height:1.2}.cd p,small,.bc,.mu{color:var(--mu);margin:0}
+.lbl{color:var(--mu);font-weight:600;margin:20px 0 12px}.bc{margin:4px 0 12px;font-weight:600}
+.co{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:24px;padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh);cursor:pointer;border:1px solid var(--bd)}
+.co img,.co .lg{width:78px;height:78px;border-radius:18px;object-fit:cover;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px}
+.co h3{margin:0 0 4px;font-size:21px}.co>span{margin-left:auto;font-size:26px;color:var(--mu)}
+.tgb{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#e8ecff;color:#1b2547;border-radius:20px;padding:16px 18px}
+[data-t=dark] .tgb{background:#222a4a;color:#eef0f7}.tgb p{flex:1;min-width:160px;margin:0}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 0}.tabs button{white-space:nowrap}.tabs .on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.rw{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px 12px;margin:8px 0}
+.rw.on{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac) inset}.ri{width:38px;height:38px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;flex:none}
+.rt{flex:1;min-width:0}.rt b{display:block}.un{font-weight:700;margin:16px 0 4px;color:var(--ac)}
+#pl{position:sticky;top:var(--hh);z-index:10;margin:-14px -14px 0}
+.pn{background:#000;color:#fff;box-shadow:0 6px 16px #0006}.pb{display:flex;gap:6px;align-items:center;padding:6px 10px;font-size:14px}.pb b{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.pb button{padding:3px 9px;border-radius:8px;font-size:13px;background:#222;color:#fff;border-color:#444}.pb .on{background:var(--ac);border-color:var(--ac)}
+.st{aspect-ratio:16/9;background:#000}.st iframe,.st video{width:100%;height:100%;border:0;display:block}
+#sb,#an{position:fixed;top:var(--hh);z-index:30;background:var(--card);border:1px solid var(--bd);box-shadow:0 10px 30px #0003}
+#sb{left:0;right:0;padding:10px;border-radius:0}#sb input{width:100%}
+#an,#mn{right:8px;width:min(380px,94vw);max-height:70vh;overflow:auto;border-radius:16px;padding:10px 14px}
+#mn{position:fixed;top:var(--hh);z-index:30;background:var(--card);border:1px solid var(--bd);width:190px;padding:6px}
+#mn button{display:block;width:100%;text-align:left;border:0;background:none}[hidden]{display:none!important}
+.an{border-left:4px solid var(--ac);padding:6px 10px;margin:10px 0}.an p{margin:2px 0}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#111c3a;color:#fff;padding:9px 16px;border-radius:10px;display:none;z-index:50}
 </style></head><body>
-<header><b class="logo" onclick="S.sub='';S.q='';$('#q').value='';S.view='home';R()">📚 Study Hub</b>
-<input id="q" placeholder="Search lectures, PDFs, PYQs…" oninput="S.q=this.value;R()">
-<button onclick="theme()">🌓</button><button onclick="S.view='bm';S.sub='';R()">★ Saved</button>
-<button onclick="share()">Share</button><a class="btn" id="tg" target="_blank" rel="noopener">Telegram</a></header>
-<main id="m">Loading…</main>
-<div id="vid" hidden onclick="this.hidden=true;$('#vb').innerHTML=''"><div id="vb" onclick="event.stopPropagation()"></div></div>
-<div id="toast"></div>
+<header><button class="ic" id="bk" onclick="up()" hidden>←</button><h1 id="ti" onclick="location.hash=''">Study Hub</h1><span class="sp"></span>
+<button class="ic" onclick="tg('sb')">🔍</button><button class="ic" onclick="bell()">🔔<i id="bd" hidden></i></button><button class="ic" onclick="tg('mn')">⋮</button></header>
+<div id="sb" hidden><input id="q" placeholder="Search lectures, PDFs, PYQs…" oninput="S.q=this.value;R()"></div>
+<div id="mn" hidden><button onclick="location.hash='v=bm';tg('mn')">★ Saved</button><button onclick="theme()">🌓 Theme</button><button onclick="share()">⤴ Share</button><button onclick="load(1);tg('mn')">↻ Refresh</button></div>
+<div id="an" hidden></div>
+<main id="m">Loading…</main><div id="toast"></div>
 <script>
-/* ===== CONFIG: must point to the same repo/file the Worker writes to ===== */
+/* ===== CONFIG ===== */
 const CONFIG={
-  CONTENT_URL:"data/content.json", // GitHub Pages path; or full https://raw.githubusercontent.com/OWNER/REPO/main/data/content.json
+  CONTENT_URL:"data/content.json",   // same repo/file the Worker writes
   TELEGRAM:"https://t.me/yourchannel",
+  MOVI_URL:"https://cdn.jsdelivr.net/npm/movi-player@0.4/dist/element.js", // open-source Movi player
   REFRESH_MS:60000
 };
 const $=s=>document.querySelector(s);
-const TYPES={lecture:"Lectures",pdf:"PDFs",pyq:"PYQs",assignment:"Assignments",practical:"Practical Files",syllabus:"Syllabus"};
-let D={branches:[],semesters:[],subjects:[],items:[],announcements:[]};
-let S={br:localStorage.br||"",sem:localStorage.sem||"",sub:"",type:"all",q:"",view:"home"};
-let BM=[];try{BM=JSON.parse(localStorage.bm||"[]")}catch(e){}
+const TYPES={lecture:"Lectures",pdf:"PDFs",pyq:"PYQs",assignment:"Assignments",practical:"Practical",syllabus:"Syllabus"};
+const COL=["#2f5de8","#e5365a","#1fa974","#f0892b","#8b4fe0","#0ea5b7","#d1478f","#5b7a1a","#c2410c"];
+let D={courses:[],branches:[],semesters:[],subjects:[],items:[],announcements:[]},LAST="",PLN=null,MOVI=null;
+let S={q:"",type:"lecture",playing:"",mode:"std",pend:""};
+let BM=[],SEEN=[];try{BM=JSON.parse(localStorage.bm||"[]");SEEN=JSON.parse(localStorage.seen||"[]")}catch(e){}
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pub=a=>(a||[]).filter(x=>x.published!==false);
 const safe=u=>/^https?:\/\//i.test(u||"")?u:"#";
-const toast=t=>{const e=$("#toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)};
-$("#tg").href=CONFIG.TELEGRAM;
+const toast=t=>{const e=$("#toast");e.textContent=t;e.style.display="block";clearTimeout(e._t);e._t=setTimeout(()=>e.style.display="none",2400)};
+const tg=id=>{["sb","mn","an"].forEach(x=>x!=id&&($("#"+x).hidden=true));$("#"+id).hidden=!$("#"+id).hidden;if(id=="sb"&&!$("#sb").hidden)$("#q").focus()};
 document.documentElement.dataset.t=localStorage.theme||"light";
-function theme(){const t=document.documentElement.dataset.t=="dark"?"light":"dark";document.documentElement.dataset.t=t;localStorage.theme=t}
-function save(){localStorage.br=S.br;localStorage.sem=S.sem}
-async function load(manual){
-  try{const r=await fetch(CONFIG.CONTENT_URL+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;D=await r.json();if(manual)toast("Content refreshed")}
-  catch(e){toast("Could not load content")}
-  R();
-}
+function theme(){const t=document.documentElement.dataset.t=="dark"?"light":"dark";document.documentElement.dataset.t=t;localStorage.theme=t;tg("mn")}
+function share(){tg("mn");if(navigator.share)navigator.share({title:"Study Hub",url:location.href}).catch(()=>{});else navigator.clipboard.writeText(location.href).then(()=>toast("Link copied"))}
 function bm(id){BM=BM.includes(id)?BM.filter(x=>x!=id):[...BM,id];localStorage.bm=JSON.stringify(BM);R()}
-function share(){const d={title:document.title,url:location.href};if(navigator.share)navigator.share(d).catch(()=>{});else navigator.clipboard.writeText(d.url).then(()=>toast("Link copied"))}
-function play(id){
-  const i=D.items.find(x=>x.id==id);if(!i)return;const u=safe(i.url);
-  const y=u.match(/(?:youtu\.be\/|v=|embed\/)([\w-]{11})/),d=u.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
-  let h;
-  if(y)h=`<iframe src="https://www.youtube-nocookie.com/embed/${y[1]}" allow="fullscreen;picture-in-picture" allowfullscreen></iframe>`;
-  else if(d)h=`<iframe src="https://drive.google.com/file/d/${d[1]}/preview" allowfullscreen></iframe>`;
-  else h=`<video controls autoplay src="${esc(u)}"></video>`;
-  $("#vb").innerHTML=h;$("#vid").hidden=false;
+/* ---- routing via #c=..&b=..&y=..&s=.. ---- */
+const LV=["c","b","y","s"];
+const P=()=>Object.fromEntries(new URLSearchParams(location.hash.slice(1)));
+function nav(k,v){const p=P(),o={};for(const l of LV){if(l==k){o[l]=v;break}if(p[l])o[l]=p[l]}location.hash=new URLSearchParams(o).toString()}
+function up(){if(S.q){S.q="";$("#q").value="";return R()}const p=P();if(p.v)return location.hash="";for(const l of[...LV].reverse())if(p[l]){delete p[l];break}location.hash=new URLSearchParams(p).toString()}
+window.onhashchange=()=>{S.q="";$("#q").value="";R()};
+/* ---- data ---- */
+async function load(manual){
+  try{const r=await fetch(CONFIG.CONTENT_URL+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;const j=await r.text();
+    if(j!==LAST){LAST=j;D={...D,...JSON.parse(j)};R();badge()}if(manual)toast("Content refreshed")}
+  catch(e){if(!LAST){$("#m").textContent="Could not load content.";}toast("Could not load content")}
 }
-function card(i){
-  const sb=D.subjects.find(s=>s.id==i.subjectId);
-  return `<div class="card"><div><small>${esc(TYPES[i.type]||i.type)}${sb?" · "+esc(sb.name):""}</small><h4>${esc(i.title)}</h4><p>${esc(i.desc)}</p></div>
-  <div class="row">${i.type=="lecture"?`<button class="p" onclick="play('${esc(i.id)}')">▶ Watch</button>`:`<a class="btn" target="_blank" rel="noopener" href="${esc(safe(i.url))}">Open</a>`}
-  <button onclick="bm('${esc(i.id)}')">${BM.includes(i.id)?"★":"☆"}</button></div></div>`;
-}
-const grid=a=>`<div class="g">${a.map(card).join("")||"<p>Nothing here yet.</p>"}</div>`;
-function R(){
-  const items=pub(D.items);let h="";
-  if(S.q){const q=S.q.toLowerCase();const r=items.filter(i=>((i.title||"")+" "+(i.desc||"")+" "+(TYPES[i.type]||"")).toLowerCase().includes(q));h=`<h3>Results (${r.length})</h3>`+grid(r)}
-  else if(S.view=="bm"){h="<h3>★ Saved</h3>"+grid(items.filter(i=>BM.includes(i.id)))}
-  else if(S.sub){
-    const sb=D.subjects.find(s=>s.id==S.sub),all=items.filter(i=>i.subjectId==S.sub);
-    const l=S.type=="all"?all:all.filter(i=>i.type==S.type);
-    h=`<button onclick="S.sub='';R()">← Back</button><h2>${esc(sb?.name)} <small>${esc(sb?.code)}</small></h2>
-    <div class="tabs"><button class="${S.type=="all"?"on":""}" onclick="S.type='all';R()">All (${all.length})</button>${Object.entries(TYPES).map(([k,v])=>`<button class="${S.type==k?"on":""}" onclick="S.type='${k}';R()">${v} (${all.filter(i=>i.type==k).length})</button>`).join("")}</div>`+grid(l);
-  }else{
-    const sems=D.semesters.filter(s=>!S.br||s.branchId==S.br),subs=D.subjects.filter(s=>s.semId==S.sem);
-    h=`<h2>Dashboard</h2>`+pub(D.announcements).slice().reverse().slice(0,4).map(a=>`<div class="ann"><b>📢 ${esc(a.title)}</b><p>${esc(a.body)}</p></div>`).join("")+
-    `<div class="row" style="margin:14px 0"><select onchange="S.br=this.value;S.sem='';save();R()"><option value="">Select branch</option>${D.branches.map(b=>`<option value="${esc(b.id)}" ${b.id==S.br?"selected":""}>${esc(b.name)}</option>`).join("")}</select>
-    <select onchange="S.sem=this.value;save();R()"><option value="">Select semester</option>${sems.map(s=>`<option value="${esc(s.id)}" ${s.id==S.sem?"selected":""}>${esc(s.name)}</option>`).join("")}</select>
-    <button onclick="load(true)">↻ Refresh</button></div>`+
-    (S.sem?`<div class="g">${subs.map(s=>`<div class="card sub" onclick="S.sub='${esc(s.id)}';S.type='all';R()"><div><small>${esc(s.code)}</small><h4>${esc(s.name)}</h4></div><p>${items.filter(i=>i.subjectId==s.id).length} resources</p></div>`).join("")||"<p>No subjects yet.</p>"}</div>`:"<p>Choose your branch and semester to see subjects.</p>")+
-    `<h3>Latest uploads</h3>`+grid(items.slice().reverse().slice(0,6));
+/* ---- announcements (bell) ---- */
+const anns=()=>pub(D.announcements).slice().reverse();
+function badge(){const n=anns().filter(a=>!SEEN.includes(a.id)).length,b=$("#bd");b.hidden=!n;b.textContent=n}
+function bell(){const a=$("#an");if(!a.hidden)return tg("an");
+  a.innerHTML=`<b>📢 Announcements</b>`+(anns().map(x=>`<div class="an"><b>${esc(x.title)}</b><p>${esc(x.body)}</p><small>${esc(x.date||"")}</small></div>`).join("")||`<p class="mu">No announcements yet.</p>`);
+  tg("an");SEEN=anns().map(x=>x.id);localStorage.seen=JSON.stringify(SEEN);badge()}
+/* ---- player: Standard + Movi ---- */
+const yt=u=>u.match(/(?:youtu\.be\/|v=|embed\/)([\w-]{11})/),gd=u=>u.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+const num=x=>parseFloat(x.unit)||999;
+const lects=sid=>pub(D.items).filter(i=>i.subjectId==sid&&i.type=="lecture").map((x,k)=>[x,k]).sort((a,b)=>num(a[0])-num(b[0])||a[1]-b[1]).map(x=>x[0]);
+function openL(id){const i=D.items.find(x=>x.id==id),sb=i&&D.subjects.find(s=>s.id==i.subjectId),se=sb&&D.semesters.find(s=>s.id==sb.semId);if(!sb||!se)return toast("Lecture not linked to a subject");
+  const br=D.branches.find(b=>b.id==se.branchId),o={};if(br&&br.courseId)o.c=br.courseId;o.b=se.branchId;o.y=se.id;o.s=sb.id;
+  S.q="";$("#q").value="";S.pend=id;const h=new URLSearchParams(o).toString();if(location.hash=="#"+h)R();else location.hash=h}
+function playItem(id){const i=D.items.find(x=>x.id==id);if(!i)return;S.playing=id;S.mode=i.player=="movi"?"movi":"std";
+  if(!PLN){PLN=document.createElement("div");PLN.className="pn"}
+  PLN.innerHTML=`<div class="pb"><b>${esc(i.title)}</b><button data-m="std" onclick="setMode('std')">Standard</button><button data-m="movi" onclick="setMode('movi')">Movi</button><button onclick="nextL()">⏭</button><button onclick="stopP()">✕</button></div><div class="st"></div>`;
+  const pl=$("#pl");if(pl){pl.appendChild(PLN);$("#sj").innerHTML=sj()}mount()}
+const setMode=m=>{S.mode=m;mount()};
+function stopP(){S.playing="";if(PLN)PLN.remove();PLN=null;if($("#sj"))$("#sj").innerHTML=sj()}
+function nextL(){const i=D.items.find(x=>x.id==S.playing);if(!i)return;const l=lects(i.subjectId),k=l.findIndex(x=>x.id==i.id);if(l[k+1])playItem(l[k+1].id);else toast("That was the last lecture")}
+async function mount(){
+  const id=S.playing,i=D.items.find(x=>x.id==id),st=PLN&&PLN.querySelector(".st");if(!i||!st)return;
+  const u=safe(i.url),y=yt(u),d=gd(u);let mode=S.mode;
+  if(mode=="movi"&&(y||d)){toast("Movi plays direct video/HLS links — using Standard");mode="std"}
+  const mark=m=>PLN.querySelectorAll("[data-m]").forEach(b=>b.classList.toggle("on",b.dataset.m==m));
+  mark(mode);st.innerHTML="";
+  if(mode=="movi"){
+    try{MOVI=MOVI||import(CONFIG.MOVI_URL);await MOVI;if(S.playing!=id)return;
+      const e=document.createElement("movi-player");["controls","autoplay","playsinline"].forEach(a=>e.setAttribute(a,""));
+      e.setAttribute("src",u);e.setAttribute("title",i.title||"");e.style.cssText="display:block;width:100%;height:100%";e.addEventListener("ended",nextL);st.appendChild(e);return}
+    catch(x){MOVI=null;toast("Movi failed to load — using Standard");mode="std";mark(mode)}
   }
-  $("#m").innerHTML=h;
+  if(y)st.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${y[1]}?autoplay=1" allow="autoplay;fullscreen;picture-in-picture" allowfullscreen></iframe>`;
+  else if(d)st.innerHTML=`<iframe src="https://drive.google.com/file/d/${d[1]}/preview" allow="autoplay" allowfullscreen></iframe>`;
+  else{const v=document.createElement("video");v.controls=v.autoplay=v.playsInline=true;v.src=u;v.onended=nextL;st.appendChild(v)}
 }
+/* ---- rendering ---- */
+const cd=(i,t,s,f)=>`<div class="cd" style="--c:${COL[i%9]}" onclick="${f}"><h3>${esc(t)}</h3><p>${esc(s)}</p></div>`;
+function row(i){const sb=D.subjects.find(s=>s.id==i.subjectId),id=esc(i.id),L=i.type=="lecture";
+  return `<div class="rw${S.playing==i.id?" on":""}" ${L?`onclick="openL('${id}')"`:""}><div class="ri">${L?"▶":"📄"}</div><div class="rt"><b>${esc(i.title)}</b><small>${esc(TYPES[i.type]||i.type)}${sb?" · "+esc(sb.name):""}${i.desc?" · "+esc(i.desc):""}</small></div>${L?"":`<a class="btn" target="_blank" rel="noopener" href="${esc(safe(i.url))}">Open</a>`}<button class="ic" onclick="event.stopPropagation();bm('${id}')">${BM.includes(i.id)?"★":"☆"}</button></div>`}
+function sj(){
+  const p=P(),all=pub(D.items).filter(i=>i.subjectId==p.s),list=all.filter(i=>i.type==S.type).map((x,k)=>[x,k]).sort((a,b)=>num(a[0])-num(b[0])||a[1]-b[1]).map(x=>x[0]);
+  let h=`<div class="tabs">${Object.entries(TYPES).map(([k,v])=>`<button class="${S.type==k?"on":""}" onclick="S.type='${k}';R()">${v} (${all.filter(i=>i.type==k).length})</button>`).join("")}</div>`,last;
+  for(const i of list){const u=i.unit?"Unit "+i.unit:"";if(u!==last&&u){h+=`<div class="un">${esc(u)}</div>`}last=u;h+=row(i)}
+  return h+(list.length?"":`<p class="mu">Nothing here yet.</p>`);
+}
+function R(){
+  const p=P(),m=$("#m"),it=pub(D.items),C=D.courses||[],by=(a,id)=>a.find(x=>x.id==id);
+  let h="",t="Study Hub",bc="",depth=0,key="x";
+  const co=by(C,p.c),br=by(D.branches,p.b),ye=by(D.semesters,p.y),sb=by(D.subjects,p.s);
+  const crumb=a=>a.filter(Boolean).map(x=>x.name).join(" · ");
+  if(!p.s&&PLN){PLN=null;S.playing=""}
+  if(S.q){const q=S.q.toLowerCase();const r=it.filter(i=>((i.title||"")+" "+(i.desc||"")+" "+(TYPES[i.type]||"")+" "+((by(D.subjects,i.subjectId)||{}).name||"")).toLowerCase().includes(q));t="Search";depth=1;h=r.map(row).join("")||`<p class="mu">Nothing found.</p>`}
+  else if(p.v=="bm"){t="Saved";depth=1;h=it.filter(i=>BM.includes(i.id)).map(row).join("")||`<p class="mu">Tap ☆ on any item to save it here.</p>`}
+  else if(p.s&&sb){t=sb.name;depth=1;key="s"+p.s;
+    if(m.dataset.v==key){$("#sj").innerHTML=sj();setTop(t,1);if(S.pend){const x=S.pend;S.pend="";playItem(x)}return}
+    h=`<div id="pl"></div><div class="bc" style="margin-top:14px">${esc(crumb([co,br,ye]))}</div><div id="sj">${sj()}</div>`}
+  else if(p.y&&ye){t=ye.name;depth=1;const l=D.subjects.filter(s=>s.semId==p.y);
+    h=`<p class="lbl">${esc(crumb([co,br]))}</p><div class="g">${l.map((s,k)=>{const T=+s.units||5,X=new Set(it.filter(i=>i.subjectId==s.id&&i.unit).map(i=>String(i.unit))).size;return cd(k,s.name,`${X} of ${T} units available`,`nav('s','${s.id}')`)}).join("")||"<p class='mu'>No subjects yet.</p>"}</div>`}
+  else if(p.b&&br){t=br.name;depth=1;const l=D.semesters.filter(s=>s.branchId==p.b);
+    h=`<p class="lbl">Choose your year</p><div class="g">${l.map((s,k)=>{const n=D.subjects.filter(x=>x.semId==s.id).length;return cd(k,s.name,n?n+" subjects":"Coming soon",n?`nav('y','${s.id}')`:`toast('Coming soon')`)}).join("")||"<p class='mu'>No years yet.</p>"}</div>`}
+  else if(p.c&&co||!C.length){if(co){t=co.name;depth=1}const l=D.branches.filter(b=>!co||b.courseId==co.id);
+    h=`<p class="lbl">Choose your branch</p><div class="g">${l.map((b,k)=>{const n=D.semesters.filter(s=>s.branchId==b.id).length;return cd(k,b.name,n+" years",`nav('b','${b.id}')`)}).join("")||"<p class='mu'>No branches yet.</p>"}</div>`}
+  else{h=`<div class="tgb"><p>Join our Telegram channel for the latest videos and PDF notes.</p><a class="btn p" target="_blank" rel="noopener" href="${esc(safe(CONFIG.TELEGRAM))}">Join</a><button onclick="tgHelp()">Not opening?</button></div><p class="lbl">Choose your course</p>`+
+    C.map(c=>{const n=D.branches.filter(b=>b.courseId==c.id).length;return `<div class="co" onclick="nav('c','${esc(c.id)}')">${c.logo?`<img src="${esc(safe(c.logo))}" alt="" onerror="this.outerHTML='<div class=lg>${esc((c.name||"?")[0])}</div>'">`:`<div class="lg">${esc((c.name||"?")[0])}</div>`}<div><h3>${esc(c.name)}</h3><p class="mu">${n} branches</p></div><span>›</span></div>`}).join("")}
+  m.dataset.v=key;m.innerHTML=h;setTop(t,depth);
+  if(key[0]=="s"){if(PLN)$("#pl").appendChild(PLN);if(S.pend){const x=S.pend;S.pend="";playItem(x)}}
+}
+function setTop(t,d){$("#ti").textContent=t;$("#bk").hidden=!d;document.title=d?t+" · Study Hub":"Study Hub"}
+function tgHelp(){navigator.clipboard&&navigator.clipboard.writeText(CONFIG.TELEGRAM).catch(()=>{});toast("Link copied — paste it in Telegram or your browser");prompt("Telegram link:",CONFIG.TELEGRAM)}
 load();setInterval(load,CONFIG.REFRESH_MS);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)load()});
 </script></body></html>

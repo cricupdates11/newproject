@@ -1,1 +1,47 @@
-{"branches":[],"semesters":[],"subjects":[],"items":[],"announcements":[]}
+{
+ "branches": [
+  {
+   "id": "ldffvf08p9",
+   "date": "2026-11-21",
+   "name": "CSE"
+  }
+ ],
+ "semesters": [
+  {
+   "id": "aui73qsfn5",
+   "date": "2026-11-21",
+   "branchId": "ldffvf08p9",
+   "name": "Sem 3"
+  }
+ ],
+ "subjects": [
+  {
+   "id": "l9jmdkqaz1",
+   "date": "2026-11-21",
+   "semId": "aui73qsfn5",
+   "code": "101",
+   "name": "DS"
+  }
+ ],
+ "items": [
+  {
+   "id": "rml5lcbvp9",
+   "date": "2026-11-21",
+   "subjectId": "l9jmdkqaz1",
+   "type": "lecture",
+   "title": "Test",
+   "url": "https://github.com/cricupdates11/newproject/tree/main",
+   "desc": "Testing",
+   "published": true
+  }
+ ],
+ "announcements": [
+  {
+   "id": "z6xgrpuoa7",
+   "date": "2026-11-21",
+   "title": "Test",
+   "body": "Hello world",
+   "published": true
+  }
+ ]
+}

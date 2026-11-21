@@ -90,13 +90,20 @@
    "date": "2026-11-21",
    "title": "Hello",
    "body": "Wold2",
-   "published": false
+   "published": true
   },
   {
    "id": "i68vjbmx8v",
    "date": "2026-11-21",
    "title": "Announcement",
    "body": "Hell baachon to kaise hai aap log mai hu appka dost",
+   "published": true
+  },
+  {
+   "id": "7ogojg0hnd",
+   "date": "2026-11-21",
+   "title": "New update",
+   "body": "https://youtu.be/zaFevWIXpIM?si=noFkIGq97GgGH7m5",
    "published": true
   }
  ],

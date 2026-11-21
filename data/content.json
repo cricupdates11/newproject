@@ -3,7 +3,8 @@
   {
    "id": "ldffvf08p9",
    "date": "2026-11-21",
-   "name": "CSE"
+   "name": "CSE",
+   "courseId": "0fzvtystnd"
   }
  ],
  "semesters": [
@@ -11,7 +12,7 @@
    "id": "aui73qsfn5",
    "date": "2026-11-21",
    "branchId": "ldffvf08p9",
-   "name": "Sem 3"
+   "name": "1 Year"
   }
  ],
  "subjects": [
@@ -20,14 +21,16 @@
    "date": "2026-11-21",
    "semId": "aui73qsfn5",
    "code": "101",
-   "name": "DS"
+   "name": "DS",
+   "units": ""
   },
   {
    "id": "g23zbnf1mg",
    "date": "2026-11-21",
    "semId": "aui73qsfn5",
    "code": "103",
-   "name": "COA"
+   "name": "COA",
+   "units": ""
   }
  ],
  "items": [
@@ -39,7 +42,9 @@
    "title": "Test",
    "url": "https://d3iw8v3z7ul3ss.cloudfront.net/a4474780fbb3430/transcoded/8yFnSR9Tg97/video.m3u8",
    "desc": "Testing",
-   "published": true
+   "published": true,
+   "unit": "1",
+   "player": "movi"
   },
   {
    "id": "t78dqirtkg",
@@ -95,5 +100,12 @@
    "published": true
   }
  ],
- "courses": []
+ "courses": [
+  {
+   "id": "0fzvtystnd",
+   "date": "2026-11-21",
+   "name": "Test",
+   "logo": ""
+  }
+ ]
 }

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" data-t="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Study Hub</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1b1f2a;--mu:#667085;--ac:#4f46e5;--bd:#e4e6ef}
+[data-t=dark]{--bg:#0f1117;--card:#1a1d27;--tx:#eef0f6;--mu:#9aa3b5;--bd:#2a2e3b;--ac:#818cf8}
+*{box-sizing:border-box}body{margin:0;font:15px system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+header{position:sticky;top:0;z-index:5;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--bd)}
+.logo{font-size:18px;cursor:pointer;margin-right:auto}
+input,select,button,.btn{font:inherit;padding:8px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);text-decoration:none;cursor:pointer}
+#q{flex:1;min-width:140px;max-width:320px;cursor:text}
+button.p,.btn{background:var(--ac);color:#fff;border-color:var(--ac)}
+main{max-width:980px;margin:auto;padding:16px}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;gap:10px}
+.card h4{margin:4px 0}.card p,small{color:var(--mu);margin:0}
+.row{display:flex;gap:8px;flex-wrap:wrap}.sub{cursor:pointer}.sub:hover{border-color:var(--ac)}
+.ann{border-left:4px solid var(--ac);background:var(--card);padding:10px 14px;margin:8px 0;border-radius:8px}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin:12px 0}.tabs button.on{background:var(--ac);color:#fff}
+#vid{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;z-index:9;padding:12px}
+#vid[hidden]{display:none}#vb{width:min(900px,100%);aspect-ratio:16/9;background:#000}#vb iframe,#vb video{width:100%;height:100%;border:0}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--ac);color:#fff;padding:8px 14px;border-radius:8px;display:none}
+</style></head><body>
+<header><b class="logo" onclick="S.sub='';S.q='';$('#q').value='';S.view='home';R()">📚 Study Hub</b>
+<input id="q" placeholder="Search lectures, PDFs, PYQs…" oninput="S.q=this.value;R()">
+<button onclick="theme()">🌓</button><button onclick="S.view='bm';S.sub='';R()">★ Saved</button>
+<button onclick="share()">Share</button><a class="btn" id="tg" target="_blank" rel="noopener">Telegram</a></header>
+<main id="m">Loading…</main>
+<div id="vid" hidden onclick="this.hidden=true;$('#vb').innerHTML=''"><div id="vb" onclick="event.stopPropagation()"></div></div>
+<div id="toast"></div>
+<script>
+/* ===== CONFIG: must point to the same repo/file the Worker writes to ===== */
+const CONFIG={
+  CONTENT_URL:"data/content.json", // GitHub Pages path; or full https://raw.githubusercontent.com/OWNER/REPO/main/data/content.json
+  TELEGRAM:"https://t.me/yourchannel",
+  REFRESH_MS:60000
+};
+const $=s=>document.querySelector(s);
+const TYPES={lecture:"Lectures",pdf:"PDFs",pyq:"PYQs",assignment:"Assignments",practical:"Practical Files",syllabus:"Syllabus"};
+let D={branches:[],semesters:[],subjects:[],items:[],announcements:[]};
+let S={br:localStorage.br||"",sem:localStorage.sem||"",sub:"",type:"all",q:"",view:"home"};
+let BM=[];try{BM=JSON.parse(localStorage.bm||"[]")}catch(e){}
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pub=a=>(a||[]).filter(x=>x.published!==false);
+const safe=u=>/^https?:\/\//i.test(u||"")?u:"#";
+const toast=t=>{const e=$("#toast");e.textContent=t;e.style.display="block";setTimeout(()=>e.style.display="none",2200)};
+$("#tg").href=CONFIG.TELEGRAM;
+document.documentElement.dataset.t=localStorage.theme||"light";
+function theme(){const t=document.documentElement.dataset.t=="dark"?"light":"dark";document.documentElement.dataset.t=t;localStorage.theme=t}
+function save(){localStorage.br=S.br;localStorage.sem=S.sem}
+async function load(manual){
+  try{const r=await fetch(CONFIG.CONTENT_URL+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;D=await r.json();if(manual)toast("Content refreshed")}
+  catch(e){toast("Could not load content")}
+  R();
+}
+function bm(id){BM=BM.includes(id)?BM.filter(x=>x!=id):[...BM,id];localStorage.bm=JSON.stringify(BM);R()}
+function share(){const d={title:document.title,url:location.href};if(navigator.share)navigator.share(d).catch(()=>{});else navigator.clipboard.writeText(d.url).then(()=>toast("Link copied"))}
+function play(id){
+  const i=D.items.find(x=>x.id==id);if(!i)return;const u=safe(i.url);
+  const y=u.match(/(?:youtu\.be\/|v=|embed\/)([\w-]{11})/),d=u.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+  let h;
+  if(y)h=`<iframe src="https://www.youtube-nocookie.com/embed/${y[1]}" allow="fullscreen;picture-in-picture" allowfullscreen></iframe>`;
+  else if(d)h=`<iframe src="https://drive.google.com/file/d/${d[1]}/preview" allowfullscreen></iframe>`;
+  else h=`<video controls autoplay src="${esc(u)}"></video>`;
+  $("#vb").innerHTML=h;$("#vid").hidden=false;
+}
+function card(i){
+  const sb=D.subjects.find(s=>s.id==i.subjectId);
+  return `<div class="card"><div><small>${esc(TYPES[i.type]||i.type)}${sb?" · "+esc(sb.name):""}</small><h4>${esc(i.title)}</h4><p>${esc(i.desc)}</p></div>
+  <div class="row">${i.type=="lecture"?`<button class="p" onclick="play('${esc(i.id)}')">▶ Watch</button>`:`<a class="btn" target="_blank" rel="noopener" href="${esc(safe(i.url))}">Open</a>`}
+  <button onclick="bm('${esc(i.id)}')">${BM.includes(i.id)?"★":"☆"}</button></div></div>`;
+}
+const grid=a=>`<div class="g">${a.map(card).join("")||"<p>Nothing here yet.</p>"}</div>`;
+function R(){
+  const items=pub(D.items);let h="";
+  if(S.q){const q=S.q.toLowerCase();const r=items.filter(i=>((i.title||"")+" "+(i.desc||"")+" "+(TYPES[i.type]||"")).toLowerCase().includes(q));h=`<h3>Results (${r.length})</h3>`+grid(r)}
+  else if(S.view=="bm"){h="<h3>★ Saved</h3>"+grid(items.filter(i=>BM.includes(i.id)))}
+  else if(S.sub){
+    const sb=D.subjects.find(s=>s.id==S.sub),all=items.filter(i=>i.subjectId==S.sub);
+    const l=S.type=="all"?all:all.filter(i=>i.type==S.type);
+    h=`<button onclick="S.sub='';R()">← Back</button><h2>${esc(sb?.name)} <small>${esc(sb?.code)}</small></h2>
+    <div class="tabs"><button class="${S.type=="all"?"on":""}" onclick="S.type='all';R()">All (${all.length})</button>${Object.entries(TYPES).map(([k,v])=>`<button class="${S.type==k?"on":""}" onclick="S.type='${k}';R()">${v} (${all.filter(i=>i.type==k).length})</button>`).join("")}</div>`+grid(l);
+  }else{
+    const sems=D.semesters.filter(s=>!S.br||s.branchId==S.br),subs=D.subjects.filter(s=>s.semId==S.sem);
+    h=`<h2>Dashboard</h2>`+pub(D.announcements).slice().reverse().slice(0,4).map(a=>`<div class="ann"><b>📢 ${esc(a.title)}</b><p>${esc(a.body)}</p></div>`).join("")+
+    `<div class="row" style="margin:14px 0"><select onchange="S.br=this.value;S.sem='';save();R()"><option value="">Select branch</option>${D.branches.map(b=>`<option value="${esc(b.id)}" ${b.id==S.br?"selected":""}>${esc(b.name)}</option>`).join("")}</select>
+    <select onchange="S.sem=this.value;save();R()"><option value="">Select semester</option>${sems.map(s=>`<option value="${esc(s.id)}" ${s.id==S.sem?"selected":""}>${esc(s.name)}</option>`).join("")}</select>
+    <button onclick="load(true)">↻ Refresh</button></div>`+
+    (S.sem?`<div class="g">${subs.map(s=>`<div class="card sub" onclick="S.sub='${esc(s.id)}';S.type='all';R()"><div><small>${esc(s.code)}</small><h4>${esc(s.name)}</h4></div><p>${items.filter(i=>i.subjectId==s.id).length} resources</p></div>`).join("")||"<p>No subjects yet.</p>"}</div>`:"<p>Choose your branch and semester to see subjects.</p>")+
+    `<h3>Latest uploads</h3>`+grid(items.slice().reverse().slice(0,6));
+  }
+  $("#m").innerHTML=h;
+}
+load();setInterval(load,CONFIG.REFRESH_MS);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)load()});
+</script></body></html>

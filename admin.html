@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>Study Hub Admin</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1b1f2a;--mu:#667085;--ac:#4f46e5;--bd:#e4e6ef;--rd:#dc2626}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1117;--card:#1a1d27;--tx:#eef0f6;--mu:#9aa3b5;--bd:#2a2e3b;--ac:#818cf8}}
+*{box-sizing:border-box}body{margin:0;font:15px system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+main{max-width:900px;margin:auto;padding:14px}
+input,select,textarea,button{font:inherit;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);width:100%}
+button{width:auto;cursor:pointer}button.p{background:var(--ac);color:#fff;border-color:var(--ac)}button.d{color:var(--rd)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin:10px 0}
+label{display:block;margin:8px 0 3px;color:var(--mu);font-size:13px}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.tabs{display:flex;gap:6px;overflow-x:auto}.tabs button.on{background:var(--ac);color:#fff}
+.li{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}
+.bar{position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:3;display:flex;justify-content:space-between;gap:8px;align-items:center}
+#msg{color:var(--mu)}.chk{width:auto}
+</style></head><body><main id="app"></main>
+<script>
+/* ===== CONFIG: your deployed Cloudflare Worker URL (no secrets here) ===== */
+const CONFIG={WORKER_URL:"https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev"};
+const TYPES={lecture:"Lecture (video link)",pdf:"PDF",pyq:"PYQ",assignment:"Assignment",practical:"Practical file",syllabus:"Syllabus"};
+const NAMES={branches:"Branches",semesters:"Semesters",subjects:"Subjects",items:"Content",announcements:"Announcements"};
+const SCH={
+ branches:[["name","Name"]],
+ semesters:[["branchId","Branch","ref:branches"],["name","Semester name (e.g. Sem 3)"]],
+ subjects:[["semId","Semester","ref:semesters"],["code","Code"],["name","Subject name"]],
+ items:[["subjectId","Subject","ref:subjects"],["type","Type","type"],["title","Title"],["url","URL (video / PDF link)","url"],["desc","Description"]],
+ announcements:[["title","Title"],["body","Message","ta"]]};
+const HAS_PUB={items:1,announcements:1};
+let tok=sessionStorage.tk||"",D=null,dirty=false,tab="branches",edit=null,msg="";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);
+async function api(p,o={}){
+  const r=await fetch(CONFIG.WORKER_URL+p,{...o,headers:{"Content-Type":"application/json",Authorization:"Bearer "+tok}});
+  const j=await r.json().catch(()=>({}));
+  if(r.status==401&&tok){logout();throw Error("Session expired — log in again")}
+  if(!r.ok)throw Error(j.error||"Error "+r.status);return j;
+}
+function logout(){tok="";sessionStorage.removeItem("tk");D=null;draw()}
+async function login(){
+  try{const r=await fetch(CONFIG.WORKER_URL+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:$("#pw").value})});
+  const j=await r.json();if(!r.ok)throw Error(j.error||"Login failed");tok=j.token;sessionStorage.tk=tok;await init()}
+  catch(e){msg=e.message;draw()}
+}
+async function init(){
+  try{D=await api("/content");for(const k in NAMES)D[k]=D[k]||[];msg=""}catch(e){msg=e.message}
+  draw();
+}
+function lab(c,x){
+  if(c=="semesters"){const b=D.branches.find(b=>b.id==x.branchId);return (b?b.name+" – ":"")+x.name}
+  if(c=="subjects")return x.name+(x.code?" ("+x.code+")":"");
+  if(c=="items")return x.title+" ["+x.type+"]";
+  return x.title||x.name;
+}
+function field(f,v){
+  const [k,l,t]=f,id="f_"+k;let h=`<label>${l}</label>`;
+  if(t&&t.startsWith("ref:")){const c=t.slice(4);h+=`<select id="${id}"><option value="">— select —</option>${D[c].map(o=>`<option value="${esc(o.id)}" ${o.id==v?"selected":""}>${esc(lab(c,o))}</option>`).join("")}</select>`}
+  else if(t=="type")h+=`<select id="${id}">${Object.entries(TYPES).map(([a,b])=>`<option value="${a}" ${a==v?"selected":""}>${b}</option>`).join("")}</select>`;
+  else if(t=="ta")h+=`<textarea id="${id}" rows="4">${esc(v)}</textarea>`;
+  else{h+=`<input id="${id}" value="${esc(v)}">`;if(t=="url")h+=`<div class="row" style="margin-top:6px"><input type="file" id="up" accept=".pdf,.doc,.docx,.ppt,.pptx,.zip,.png,.jpg"><button onclick="upload()">Upload file</button></div>`}
+  return h;
+}
+function draw(){
+  const a=$("#app");
+  if(!tok||!D){a.innerHTML=`<div class="card" style="max-width:360px;margin:12vh auto"><h2>Admin login</h2><input id="pw" type="password" placeholder="Password" onkeydown="if(event.key=='Enter')login()"><p id="msg">${esc(msg)}</p><button class="p" onclick="login()">Log in</button></div>`;return}
+  const e=edit&&D[tab].find(x=>x.id==edit)||{};
+  a.innerHTML=`<div class="bar"><b>⚙️ Admin</b><span id="msg">${esc(msg)}${dirty?" ● unpublished changes":""}</span><span class="row"><button class="p" onclick="publish()">Publish changes</button><button onclick="logout()">Logout</button></span></div>
+  <div class="tabs">${Object.entries(NAMES).map(([k,v])=>`<button class="${k==tab?"on":""}" onclick="tab='${k}';edit=null;draw()">${v}</button>`).join("")}</div>
+  <div class="card"><b>${edit?"Edit":"Add"} ${NAMES[tab]}</b>${SCH[tab].map(f=>field(f,e[f[0]])).join("")}
+  ${HAS_PUB[tab]?`<label><input type="checkbox" class="chk" id="f_pub" ${e.published?"checked":""}> Published (visible to students after you click Publish changes)</label>`:""}
+  <div class="row" style="margin-top:10px"><button class="p" onclick="saveItem()">${edit?"Update":"Add"}</button>${edit?`<button onclick="edit=null;draw()">Cancel</button>`:""}</div></div>
+  <div class="card">${D[tab].map(x=>`<div class="li"><span>${esc(lab(tab,x))}${HAS_PUB[tab]?(x.published?" ✅":" 📝 draft"):""}</span><span class="row">${HAS_PUB[tab]?`<button onclick="tgl('${x.id}')">${x.published?"Unpublish":"Publish"}</button>`:""}<button onclick="edit='${x.id}';draw();scrollTo(0,0)">Edit</button><button class="d" onclick="del('${x.id}')">Delete</button></span></div>`).join("")||"Nothing yet."}</div>`;
+}
+function saveItem(){
+  const o=edit?{...D[tab].find(x=>x.id==edit)}:{id:uid(),date:new Date().toISOString().slice(0,10)};
+  for(const f of SCH[tab]){o[f[0]]=$("#f_"+f[0]).value.trim();if(!o[f[0]]&&f[0]!="desc"){msg="Fill: "+f[1];return draw()}}
+  if(o.url&&!/^https?:\/\//i.test(o.url)){msg="URL must start with http(s)://";return draw()}
+  if(HAS_PUB[tab])o.published=$("#f_pub").checked;
+  D[tab]=edit?D[tab].map(x=>x.id==edit?o:x):[...D[tab],o];
+  edit=null;dirty=true;msg="Saved locally";draw();
+}
+function tgl(id){const x=D[tab].find(x=>x.id==id);x.published=!x.published;dirty=true;draw()}
+function rm(c,id){
+  const ch={branches:["semesters","branchId"],semesters:["subjects","semId"],subjects:["items","subjectId"]}[c];
+  if(ch)D[ch[0]].filter(x=>x[ch[1]]==id).forEach(x=>rm(ch[0],x.id));
+  D[c]=D[c].filter(x=>x.id!=id);
+}
+function del(id){if(!confirm("Delete? Child items (e.g. subjects/content under it) are deleted too."))return;rm(tab,id);dirty=true;draw()}
+async function publish(){
+  msg="Publishing…";draw();
+  try{await api("/content",{method:"PUT",body:JSON.stringify(D)});dirty=false;msg="Published ✔ (site updates after GitHub Pages rebuilds, ~1 min)"}
+  catch(e){msg="Publish failed: "+e.message}
+  draw();
+}
+function upload(){
+  const f=$("#up").files[0];if(!f)return;
+  if(f.size>20e6){msg="Max 20 MB";return draw()}
+  msg="Uploading…";const r=new FileReader();
+  r.onload=async()=>{try{const j=await api("/upload",{method:"POST",body:JSON.stringify({name:f.name,data:r.result.split(",")[1]})});$("#f_url").value=j.url;msg="Uploaded — now click Add/Update"}catch(e){msg="Upload failed: "+e.message}
+    const u=$("#f_url").value;draw();$("#f_url").value=u};
+  r.readAsDataURL(f);
+}
+tok?init():draw();
+</script></body></html>

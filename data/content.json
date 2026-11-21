@@ -86,6 +86,13 @@
    "title": "Hello",
    "body": "Wold2",
    "published": false
+  },
+  {
+   "id": "i68vjbmx8v",
+   "date": "2026-11-21",
+   "title": "Announcement",
+   "body": "Hell baachon to kaise hai aap log mai hu appka dost",
+   "published": true
   }
  ]
 }

@@ -21,6 +21,13 @@
    "semId": "aui73qsfn5",
    "code": "101",
    "name": "DS"
+  },
+  {
+   "id": "g23zbnf1mg",
+   "date": "2026-11-21",
+   "semId": "aui73qsfn5",
+   "code": "103",
+   "name": "COA"
   }
  ],
  "items": [
@@ -32,6 +39,26 @@
    "title": "Test",
    "url": "https://github.com/cricupdates11/newproject/tree/main",
    "desc": "Testing",
+   "published": true
+  },
+  {
+   "id": "t78dqirtkg",
+   "date": "2026-11-21",
+   "subjectId": "l9jmdkqaz1",
+   "type": "lecture",
+   "title": "Part2",
+   "url": "https://youtu.be/zaFevWIXpIM?si=noFkIGq97GgGH7m5",
+   "desc": "Part2",
+   "published": true
+  },
+  {
+   "id": "g9p3u3nab5",
+   "date": "2026-11-21",
+   "subjectId": "g23zbnf1mg",
+   "type": "lecture",
+   "title": "Part1",
+   "url": "https://youtu.be/zaFevWIXpIM?si=noFkIGq97GgGH7m5",
+   "desc": "Part 1",
    "published": true
   }
  ],

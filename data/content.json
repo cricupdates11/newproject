@@ -95,12 +95,5 @@
    "published": true
   }
  ],
- "courses": [
-  {
-   "id": "kzi2ksxz39",
-   "date": "2026-11-21",
-   "name": "Test",
-   "logo": ""
-  }
- ]
+ "courses": []
 }

@@ -75,6 +75,18 @@
    "url": "https://github.com/cricupdates11/newproject/uploads/1795270218108-IMG-20261121-WA0016.jpg",
    "desc": "Sylla",
    "published": true
+  },
+  {
+   "id": "yc2u03ge64",
+   "date": "2026-11-22",
+   "subjectId": "l9jmdkqaz1",
+   "type": "lecture",
+   "title": "New",
+   "unit": "2",
+   "url": "https://d3iw8v3z7ul3ss.cloudfront.net/a4474780fbb3430/transcoded/8yFnSR9Tg97/video.m3u8",
+   "desc": "Coming Soon",
+   "player": "movi",
+   "published": true
   }
  ],
  "announcements": [
